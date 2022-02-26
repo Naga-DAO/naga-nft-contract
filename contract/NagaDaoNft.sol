@@ -15,35 +15,36 @@
     using the code for your own project.
 */
 
-pragma solidity >=0.7.0 <0.9.0;
+pragma solidity >=0.8.0 <0.9.0;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract SimpleNftLowerGas is ERC721, Ownable {
+contract NagaDaoNft is ERC721, Ownable {
+  using SafeERC20 for IERC20;
   using Strings for uint256;
   using Counters for Counters.Counter;
 
   Counters.Counter private supply;
 
-  string public uriPrefix = "";
+  string public uriPrefix = "ipfs://__CID__";
   string public uriSuffix = ".json";
-  string public hiddenMetadataUri;
   
-  uint256 public cost = 0.01 ether;
   uint256 public maxSupply = 10000;
-  uint256 public maxMintAmountPerTx = 5;
 
   bool public paused = true;
-  bool public revealed = false;
+  
+  mapping(address => bool) public allowMinting;
 
-  constructor() ERC721("NAME", "SYMBOL") {
-    setHiddenMetadataUri("ipfs://__CID__/hidden.json");
+  constructor() ERC721("Naga DAO", "NAGA") {
+
   }
 
   modifier mintCompliance(uint256 _mintAmount) {
-    require(_mintAmount > 0 && _mintAmount <= maxMintAmountPerTx, "Invalid mint amount!");
+    require(_mintAmount > 0, "Invalid mint amount!");
     require(supply.current() + _mintAmount <= maxSupply, "Max supply exceeded!");
     _;
   }
@@ -52,16 +53,16 @@ contract SimpleNftLowerGas is ERC721, Ownable {
     return supply.current();
   }
 
-  function mint(uint256 _mintAmount) public payable mintCompliance(_mintAmount) {
+  function mint(address to, uint256 _mintAmount) public mintCompliance(_mintAmount) {
     require(!paused, "The contract is paused!");
-    require(msg.value >= cost * _mintAmount, "Insufficient funds!");
+    require(allowMinting[msg.sender], "Insufficient funds!");
 
-    _mintLoop(msg.sender, _mintAmount);
+    _mintLoop(to, _mintAmount);
   }
   
-  function mintForAddress(uint256 _mintAmount, address _receiver) public mintCompliance(_mintAmount) onlyOwner {
-    _mintLoop(_receiver, _mintAmount);
-  }
+  // function mintForAddress(uint256 _mintAmount, address _receiver) public mintCompliance(_mintAmount) onlyOwner {
+  //   _mintLoop(_receiver, _mintAmount);
+  // }
 
   function walletOfOwner(address _owner)
     public
@@ -100,58 +101,47 @@ contract SimpleNftLowerGas is ERC721, Ownable {
       "ERC721Metadata: URI query for nonexistent token"
     );
 
-    if (revealed == false) {
-      return hiddenMetadataUri;
-    }
-
     string memory currentBaseURI = _baseURI();
     return bytes(currentBaseURI).length > 0
         ? string(abi.encodePacked(currentBaseURI, _tokenId.toString(), uriSuffix))
         : "";
   }
 
-  function setRevealed(bool _state) public onlyOwner {
-    revealed = _state;
+  event SetAllowMinting(address indexed caller, address indexed minter, bool allowed);
+  function setAllowMinting(address minter, bool allowed) public onlyOwner {
+    allowMinting[minter] = allowed;
+    emit SetAllowMinting(msg.sender, minter, allowed);
   }
 
-  function setCost(uint256 _cost) public onlyOwner {
-    cost = _cost;
-  }
-
-  function setMaxMintAmountPerTx(uint256 _maxMintAmountPerTx) public onlyOwner {
-    maxMintAmountPerTx = _maxMintAmountPerTx;
-  }
-
-  function setHiddenMetadataUri(string memory _hiddenMetadataUri) public onlyOwner {
-    hiddenMetadataUri = _hiddenMetadataUri;
-  }
-
+  event SetUriPrefix(address indexed caller, string url);
   function setUriPrefix(string memory _uriPrefix) public onlyOwner {
     uriPrefix = _uriPrefix;
+    emit SetUriPrefix(msg.sender, url);
   }
 
+  event SetUriSuffix(address indexed caller, string url);
   function setUriSuffix(string memory _uriSuffix) public onlyOwner {
     uriSuffix = _uriSuffix;
+    emit SetUriSuffix(msg.sender, url);
   }
 
+  event SetPaused(address indexed caller, bool paused);
   function setPaused(bool _state) public onlyOwner {
     paused = _state;
+    emit SetPaused(msg.sender, _state);
   }
 
-  function withdraw() public onlyOwner {
-    // This will pay HashLips 5% of the initial sale.
-    // You can remove this if you want, or keep it in to support HashLips and his channel.
-    // =============================================================================
-    (bool hs, ) = payable(0x943590A42C27D08e3744202c4Ae5eD55c2dE240D).call{value: address(this).balance * 5 / 100}("");
-    require(hs);
-    // =============================================================================
+  event Withdraw(address indexed caller, address indexed to, address indexed token, uint256 amount);
+  function withdraw(address to, IERC20 token, uint256 amount) public onlyOwner {
+    token.safeTransfer(to, amount);
+    emit Withdraw(msg.sender, to, address(token), amount);
+  }
 
-    // This will transfer the remaining contract balance to the owner.
-    // Do not remove this otherwise you will not be able to withdraw the funds.
-    // =============================================================================
-    (bool os, ) = payable(owner()).call{value: address(this).balance}("");
+  event withdrawMatic(address indexed caller, address indexed to, uint256 amount);
+  function withdrawMatic(address to, uint256 amount) public onlyOwner {
+    (bool os, ) = payable(to).call{value: amount}("");
+    emit WithdrawMatic(msg.sender, to, amount);
     require(os);
-    // =============================================================================
   }
 
   function _mintLoop(address _receiver, uint256 _mintAmount) internal {
