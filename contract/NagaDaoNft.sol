@@ -19,7 +19,7 @@ pragma solidity >=0.8.0 <0.9.0;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
@@ -116,13 +116,13 @@ contract NagaDaoNft is ERC721, Ownable {
   event SetUriPrefix(address indexed caller, string url);
   function setUriPrefix(string memory _uriPrefix) public onlyOwner {
     uriPrefix = _uriPrefix;
-    emit SetUriPrefix(msg.sender, url);
+    emit SetUriPrefix(msg.sender, _uriPrefix);
   }
 
   event SetUriSuffix(address indexed caller, string url);
   function setUriSuffix(string memory _uriSuffix) public onlyOwner {
     uriSuffix = _uriSuffix;
-    emit SetUriSuffix(msg.sender, url);
+    emit SetUriSuffix(msg.sender, _uriSuffix);
   }
 
   event SetPaused(address indexed caller, bool paused);
@@ -137,7 +137,7 @@ contract NagaDaoNft is ERC721, Ownable {
     emit Withdraw(msg.sender, to, address(token), amount);
   }
 
-  event withdrawMatic(address indexed caller, address indexed to, uint256 amount);
+  event WithdrawMatic(address indexed caller, address indexed to, uint256 amount);
   function withdrawMatic(address to, uint256 amount) public onlyOwner {
     (bool os, ) = payable(to).call{value: amount}("");
     emit WithdrawMatic(msg.sender, to, amount);
