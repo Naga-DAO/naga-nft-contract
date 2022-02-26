@@ -1,0 +1,36 @@
+{
+  "name": "naga_dao_contract",
+  "version": "1.0.0",
+  "description": "This is Naga DAO NFT Contract source code",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Chomtana/naga-dao-contract.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Chomtana/naga-dao-contract/issues"
+  },
+  "homepage": "https://github.com/Chomtana/naga-dao-contract#readme",
+  "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "^2.0.2",
+    "chai": "^4.3.4",
+    "ethereum-waffle": "^3.3.0",
+    "ethers": "^5.3.0",
+    "hardhat": "^2.6.4"
+  },
+  "dependencies": {
+    "@nomiclabs/hardhat-etherscan": "^2.1.3",
+    "@nomiclabs/hardhat-waffle": "^2.0.1",
+    "@openzeppelin/contracts": "4.1.0",
+    "@uniswap/lib": "^4.0.1-alpha",
+    "@uniswap/v2-core": "^1.0.1",
+    "bignumber.js": "^9.0.1",
+    "eip-712": "^0.4.3",
+    "typescript": "^4.5.3"
+  }
+}
