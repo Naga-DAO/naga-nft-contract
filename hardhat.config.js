@@ -84,8 +84,8 @@ module.exports = {
       
     },
     testnet: {
-      url: "https://data-seed-prebsc-2-s2.binance.org:8545",
-      chainId: 97,
+      url: "https://rpc-mumbai.matic.today",
+      chainId: 80001,
       gasPrice: 20000000000,
       accounts: [privateKeyTest]
     },
