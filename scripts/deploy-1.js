@@ -3,6 +3,7 @@
 //
 // When running the script with `hardhat run <script>` you'll find the Hardhat
 // Runtime Environment's members available in the global scope.
+const { ethers } = require("ethers");
 const hre = require("hardhat");
 
 async function deploy(contractName, ...args) {
@@ -25,14 +26,22 @@ async function main() {
   console.log("HARDHAT_NETWORK", process.env.HARDHAT_NETWORK);
   const accounts = await hre.ethers.getSigners();
 
-  const WETH = "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c";
+  const WETH = "0xa6fa4fb5f76172d178d61b04b0ecd319c5d1c0aa";
+  const FREE_MINT_AMOUNT = 50;
+  const MINT_PRICE = ethers.utils.parseEther('0.03');
+  const MINT_SUPPLY = 1000;
 
   const contracts = {};
 
   contracts.nagaDaoNft = await deploy("NagaDaoNft");
 
   contracts.nagaSale1 = await deploy(
-    "NagaSale1"
+    "NagaSale1",
+    contracts.nagaDaoNft.address,
+    WETH,
+    FREE_MINT_AMOUNT,
+    MINT_PRICE,
+    MINT_SUPPLY,
   );
 
   await contracts.nagaDaoNft.setAllowMinting(contracts.nagaSale1.address, true);

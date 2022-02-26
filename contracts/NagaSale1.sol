@@ -69,7 +69,7 @@ contract NagaSale1 is Ownable {
     }
   }
 
-  function setWhitelist(address[] wallet, uint256[] amount) public onlyOwner {
+  function setWhitelist(address[] memory wallet, uint256[] memory amount) public onlyOwner {
     for (uint i = 0; i < wallet.length; i++) {
       whitelist[wallet[i]] = amount[i];
     }
