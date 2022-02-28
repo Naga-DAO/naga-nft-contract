@@ -40,7 +40,7 @@ contract NagaDaoNft is ERC721, Ownable {
   mapping(address => bool) public allowMinting;
 
   constructor() ERC721("Naga DAO", "NAGA") {
-
+    _mintLoop(msg.sender, 32);
   }
 
   modifier mintCompliance(uint256 _mintAmount) {
@@ -55,7 +55,7 @@ contract NagaDaoNft is ERC721, Ownable {
 
   function mint(address to, uint256 _mintAmount) public mintCompliance(_mintAmount) {
     require(!paused, "The contract is paused!");
-    require(allowMinting[msg.sender], "Insufficient funds!");
+    require(allowMinting[msg.sender], "Not allowed minting");
 
     _mintLoop(to, _mintAmount);
   }

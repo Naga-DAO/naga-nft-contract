@@ -27,7 +27,6 @@ async function main() {
   const accounts = await hre.ethers.getSigners();
 
   const WETH = "0xa6fa4fb5f76172d178d61b04b0ecd319c5d1c0aa";
-  const FREE_MINT_AMOUNT = 50;
   const MINT_PRICE = ethers.utils.parseEther('0.03');
   const MINT_SUPPLY = 1000;
 
@@ -39,7 +38,6 @@ async function main() {
     "NagaSale1",
     contracts.nagaDaoNft.address,
     WETH,
-    FREE_MINT_AMOUNT,
     MINT_PRICE,
     MINT_SUPPLY,
   );
