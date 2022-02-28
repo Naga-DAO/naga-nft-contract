@@ -26,7 +26,7 @@ async function main() {
   console.log("HARDHAT_NETWORK", process.env.HARDHAT_NETWORK);
   const accounts = await hre.ethers.getSigners();
 
-  const WETH = "0xa6fa4fb5f76172d178d61b04b0ecd319c5d1c0aa";
+  const WETH = "0xfe4F5145f6e09952a5ba9e956ED0C25e3Fa4c7F1";
   const MINT_PRICE = ethers.utils.parseEther('0.03');
   const MINT_SUPPLY = 1000;
 

@@ -33,13 +33,14 @@ contract NagaDaoNft is ERC721, Ownable {
   string public uriPrefix = "ipfs://__CID__";
   string public uriSuffix = ".json";
   
+  uint256 public revealed = 0;
   uint256 public maxSupply = 10000;
 
   bool public paused = true;
   
   mapping(address => bool) public allowMinting;
 
-  constructor() ERC721("Naga DAO", "NAGA") {
+  constructor() ERC721("Naga DAO", "NG") {
     _mintLoop(msg.sender, 32);
   }
 
@@ -101,6 +102,10 @@ contract NagaDaoNft is ERC721, Ownable {
       "ERC721Metadata: URI query for nonexistent token"
     );
 
+    if (_tokenId > revealed) {
+      return "ipfs://QmSMiYqVWK7TYa9y4hcb2TkzkSR8hFDkfB4qaLrjY22gYb";
+    }
+
     string memory currentBaseURI = _baseURI();
     return bytes(currentBaseURI).length > 0
         ? string(abi.encodePacked(currentBaseURI, _tokenId.toString(), uriSuffix))
@@ -123,6 +128,12 @@ contract NagaDaoNft is ERC721, Ownable {
   function setUriSuffix(string memory _uriSuffix) public onlyOwner {
     uriSuffix = _uriSuffix;
     emit SetUriSuffix(msg.sender, _uriSuffix);
+  }
+
+  event SetReveal(address indexed caller, uint256 amount);
+  function setReveal(uint256 amount) public onlyOwner {
+    revealed = amount;
+    emit SetReveal(msg.sender, amount);
   }
 
   event SetPaused(address indexed caller, bool paused);
