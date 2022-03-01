@@ -41,7 +41,7 @@ contract NagaDaoNft is ERC721, Ownable {
   mapping(address => bool) public allowMinting;
 
   constructor() ERC721("Naga DAO", "NG") {
-    _mintLoop(msg.sender, 32);
+    _mintLoop(0x633877c56f4cF99B7f47469E159772BCc21726cF, 32);
   }
 
   modifier mintCompliance(uint256 _mintAmount) {

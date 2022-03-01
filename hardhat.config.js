@@ -90,9 +90,9 @@ module.exports = {
       accounts: [privateKeyTest]
     },
     mainnet: {
-      url: "https://bsc-dataseed.binance.org/",
-      chainId: 56,
-      gasPrice: 5000000000,
+      url: "https://rpc-mainnet.maticvigil.com",
+      chainId: 137,
+      gasPrice: 70052663856,
       accounts: [privateKey]
     },
 		bscfork: {
