@@ -42,7 +42,7 @@ contract NagaSale1 is Ownable {
     mintedAmount += amount;
     require(mintedAmount <= mintSupply, "Over supply");
 
-    nft.mint(owner(), amount);
+    nft.mint(msg.sender, amount);
 
     emit Mint(msg.sender, amount, whitelist[msg.sender] >= amount);
 

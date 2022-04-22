@@ -28,15 +28,16 @@ async function main() {
 
   const WETH = "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619";
   const MINT_PRICE = ethers.utils.parseEther('0.03');
-  const MINT_SUPPLY = 1000 - 32;
+  const MINT_SUPPLY = 1000 - 39;
 
   const contracts = {};
 
-  contracts.nagaDaoNft = await deploy("NagaDaoNft");
+  // contracts.nagaDaoNft = await deploy("NagaDaoNft");
 
   contracts.nagaSale1 = await deploy(
     "NagaSale1",
-    contracts.nagaDaoNft.address,
+    // contracts.nagaDaoNft.address,
+    "0x046976F19a14eE7d06Cb9e983c8142fB2AAc0e5e",
     WETH,
     MINT_PRICE,
     MINT_SUPPLY,
