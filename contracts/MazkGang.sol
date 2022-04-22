@@ -85,7 +85,7 @@ contract MazkGang is ERC721Enumerable, Ownable {
 
   // whitelist
   function mintWhitelist(uint256 _mintAmount, bytes32[] memory proof) public payable {
-    MerkleProof.verify(proof, whitelistRoot, bytes32(uint256(uint160(msg.sender))));
+    require(MerkleProof.verify(proof, whitelistRoot, bytes32(uint256(uint160(msg.sender)))), "Not whitelisted");
 
     require(block.timestamp >= whitelistStartTimestamp, "Wait");
     require(msg.value == whitelistCost * _mintAmount, "Pay");
