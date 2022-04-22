@@ -152,7 +152,7 @@ contract MazkGang is ERC721Enumerable, Ownable {
 
     string memory currentBaseURI = _baseURI();
     return bytes(currentBaseURI).length > 0
-        ? string(abi.encodePacked(currentBaseURI, tokenId.toString(), baseExtension))
+        ? string(abi.encodePacked(currentBaseURI, ((tokenId + seed) % maxSupply + 1).toString(), baseExtension))
         : "";
   }
 
